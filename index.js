@@ -51,7 +51,6 @@ function createTable(e) {
     let randomNum = randomRow.toString() + randomCol.toString(); 
     bombs[randomNum] = true;
   }
-  console.log('bombs',bombs);
 
   var flagNum = Object.keys(bombs).length;
  
@@ -201,17 +200,12 @@ function createTable(e) {
     }
   }
 
-
   table.addEventListener('click', cellhandleClick, true);
   table.addEventListener('contextmenu', flaghandleClick, true);
- 
 }
-
-
 
 function handleReset(e) {
   e.preventDefault();
-  console.log('working')
   document.location.href = '';
 }
   
