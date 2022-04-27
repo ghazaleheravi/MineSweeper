@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles.css">
+  <title>MineSweeper</title>
+</head>
+<body>
+  <div class="form">
+    <form>
+      <label for="rows">How Many Rows (3-30):</label>
+      <input id="rows" type="number" min="3" max="30">
+      <label for="cols">How Many Coloms (3-30):</label>
+      <input id="cols" type="number" min="3" max="30">
+      <button type="submit" class="submit">SUBMIT</button>
+    </form>
+  </div>
+  <p class="game-over"></p>
+  <div class="table">
+    <p class="flags"></p>
+    <table></table>
+  </div>
+  <script src="./index.js"></script>
+</body>
+</html>

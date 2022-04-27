@@ -1,0 +1,52 @@
+body {
+  text-align: center;
+  justify-content: center;
+  margin:auto;
+}
+
+table {
+  justify-content: center;
+  margin: auto;
+  margin-top: 30px;
+  border: 1px solid #FF69B4;
+}
+
+td {
+  width: 20px;
+  height: 20px;
+  padding: 5px;
+  color:#008080;
+  font-weight: bold;
+}
+
+p {
+  color:#FF1493;
+  font-size: larger;
+  margin-top: 60px;
+}
+
+form {
+  margin-top: 50px;
+  color:#4B0082;
+  font-size: 16px;
+  min-width: 257px;
+}
+
+.reset, .submit {
+  background:	#F5F5F5;
+  border: 1px solid;
+  color:#4B0082;
+}
+
+.flags {
+  font-size: 11px;
+  color:#4B0082;
+}
+
+.reset {
+  background-color: white;
+  color: #4B0082;
+  font-size: 20px;
+  margin-top: 2px;
+  border: none;
+}
