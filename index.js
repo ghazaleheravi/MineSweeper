@@ -51,6 +51,7 @@ function createTable(e) {
     let randomNum = randomRow.toString() + randomCol.toString(); 
     bombs[randomNum] = true;
   }
+  console.log('bombs', bombs);
 
   var flagNum = Object.keys(bombs).length;
  
@@ -141,45 +142,80 @@ function createTable(e) {
 
   /* number generator */
   for (let key of Object.keys(bombs)) {
-    let row = Number(key.slice(0,1));
-    let col = Number(key.slice(1));
-    
-    if (col > 1 && !bombs[Number(key)-1]) {
-      (!nums[Number(key)-1]) ? nums[Number(key)-1] = 1 : nums[Number(key)-1] += 1;
+    let mykey = Number(key); 
+    if (mykey <= 109) {
+      var row = Math.floor(mykey / 10);
+      var col = mykey % 10;  
+    }
+    if (mykey > 109) {
+      row = Math.floor(mykey / 100);
+      col = mykey % 100;
     } 
-    if (col < colsVal && !bombs[Number(key)+1]) {
-      (!nums[Number(key)+1]) ? nums[Number(key)+1] = 1 : nums[Number(key)+1] += 1;
+    
+    console.log('row-col',row ,',', col);
+   
+   
+    if (col > 1 && !bombs[Number(row.toString()+(col-1).toString())]) {
+      (!nums[Number(row.toString()+(col-1).toString())]) ? nums[Number(row.toString()+(col-1).toString())] = 1 : nums[Number(row.toString()+(col-1).toString())] += 1;
+      //console.log('-1: ',Number(row.toString()+(col-1).toString()));
+    } 
+    if (col < colsVal && !bombs[Number(row.toString()+(col+1).toString())]) {
+      (!nums[Number(row.toString()+(col+1).toString())]) ? nums[Number(row.toString()+(col+1).toString())] = 1 : nums[Number(row.toString()+(col+1).toString())] += 1;
+      //console.log('+1: ',Number(row.toString()+(col+1).toString()));
     }
-    if (row > 1 && !bombs[Number(key)-10]) {
-      (!nums[Number(key)-10]) ? nums[Number(key)-10] = 1 : nums[Number(key)-10] += 1;
+    if (row > 1 && !bombs[Number((row-1).toString()+col.toString())]) {
+      (!nums[Number((row-1).toString()+col.toString())]) ? nums[Number((row-1).toString()+(col).toString())] = 1 : nums[Number((row-1).toString()+(col).toString())] += 1;
+      //console.log('-10: ',Number((row-1).toString()+col.toString()));
     }
-    if (row < rowsVal && !bombs[Number(key)+10]) {
-      (!nums[Number(key)+10]) ? nums[Number(key)+10] = 1 : nums[Number(key)+10] += 1;
+    if (row < rowsVal && !bombs[Number((row+1).toString()+col.toString())]) {
+      (!nums[Number((row+1).toString()+col.toString())]) ? nums[Number((row+1).toString()+col.toString())] = 1 : nums[Number((row+1).toString()+(col).toString())] += 1;
+      //console.log('+10: ',Number((row+1).toString()+col.toString()));
     }
-    if (col < colsVal && row < rowsVal && !bombs[Number(key)+11]) {
-      (!nums[Number(key)+11]) ? nums[Number(key)+11] = 1 : nums[Number(key)+11] += 1;
+    if (col < colsVal && row < rowsVal && !bombs[Number((row+1).toString()+(col+1).toString())]) {
+      (!nums[Number((row+1).toString()+(col+1).toString())]) ? nums[Number((row+1).toString()+(col+1).toString())] = 1 : nums[Number((row+1).toString()+(col+1).toString())] += 1;
+      //console.log('+11: ',Number((row+1).toString()+(col+1).toString()));
     }
-    if (row > 1 && col > 1 && !bombs[Number(key)-11]) {
-      (!nums[Number(key)-11]) ? nums[Number(key)-11] = 1 : nums[Number(key)-11] += 1; 
+    if (row > 1 && col > 1 && !bombs[Number((row-1).toString()+(col-1).toString())]) {
+      (!nums[Number((row-1).toString()+(col-1).toString())]) ? nums[Number((row-1).toString()+(col-1).toString())] = 1 : nums[Number((row-1).toString()+(col-1).toString())] += 1; 
+     // console.log('-11: ',Number((row-1).toString()+(col-1).toString()));
     }
-    if (row > 1 && col < colsVal && !bombs[Number(key)-9]) {
-      (!nums[Number(key)-9]) ? nums[Number(key)-9] = 1 : nums[Number(key)-9] += 1;
+    if (row > 1 && col < colsVal && !bombs[Number((row-1).toString()+(col+1).toString())]) {
+      (!nums[Number((row-1).toString()+(col+1).toString())]) ? nums[Number((row-1).toString()+(col+1).toString())] = 1 : nums[Number((row-1).toString()+(col+1).toString())] += 1;
+     // console.log('-9: ',Number((row-1).toString()+(col+1).toString()));
     }
-    if (row < rowsVal && col > 1 && !bombs[Number(key)+9]) {
-      (!nums[Number(key)+9]) ? nums[Number(key)+9] = 1 : nums[Number(key)+9] += 1;
+    if (row < rowsVal && col > 1 && !bombs[Number((row+1).toString()+(col-1).toString())]) {
+      (!nums[Number((row+1).toString()+(col-1).toString())]) ? nums[Number((row+1).toString()+(col-1).toString())] = 1 : nums[Number((row+1).toString()+(col-1).toString())] += 1;
+     // console.log('+9: ',Number((row+1).toString()+(col-1).toString()));
     }
   }
+  console.log('nums: ',nums);
   
   /* empty generator */
   function isEmpty(clickedCell, memo={}) {
-    copyMemo = {...memo};  
-    let rows = Number(clickedCell.slice(0,1));
-    let cols = Number(clickedCell.slice(1));
-    if (rows < 1 || cols < 1 || rows > rowsVal || cols > colsVal) return;
+    copyMemo = {...memo};
+    console.log(clickedCell);  
+    /*let rows = Number(clickedCell.slice(0,1));
+    let cols = Number(clickedCell.slice(1));*/
+    if (Number(clickedCell) <= 109) {
+      var rows = Math.floor(Number(clickedCell) / 10);
+      var cols = Number(clickedCell) % 10;  
+    }
+    if (Number(clickedCell) > 109) {
+      rows = Math.floor(Number(clickedCell) / 100);
+      cols = Number(clickedCell) % 100;
+    } 
+    console.log('clickedR-C: ', rows, '-', cols);
+   
+    if (rows < 1 || cols < 1 || rows > rowsVal || cols > colsVal){
+      console.log('out of range',clickedCell)
+      return;
+    }
     if (clickedCell in bombs) {
+      console.log('this is a bomb',clickedCell)
       return;
     } 
     if (clickedCell in memo) {
+      console.log('already exists ',clickedCell)
       return;
     } 
     else if(clickedCell in nums){
