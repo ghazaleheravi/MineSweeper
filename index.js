@@ -31,7 +31,7 @@ function createTable(e) {
     var row = document.createElement('tr');
     for (let j = 1; j <= colsVal; j++) {
       var cell = document.createElement('td');
-      cell.setAttribute('class', `${i}${j}`);
+      cell.setAttribute('class', `${i}-${j}`);
       cell.style.backgroundColor = `rgba(${255},${182},${193},${0.2})`;
       row.appendChild(cell);
     }
@@ -48,17 +48,16 @@ function createTable(e) {
   for (let i = 0; i < bombNum; i++) {
     let randomRow = Math.floor(Math.random() * (rowsVal)+1);
     let randomCol = Math.floor(Math.random() * (colsVal)+1);
-    let randomNum = randomRow.toString() + randomCol.toString(); 
-    bombs[randomNum] = true;
+    bombs[`${randomRow}-${randomCol}`] = true;
   }
-  console.log('bombs', bombs);
+  //console.log('bombs', bombs);
 
   var flagNum = Object.keys(bombs).length;
- 
+  
   /* rightClick */
   function flaghandleClick(e) {
     e.preventDefault();
-
+   
     if(e.target.tagName != 'TD') return;
 
     if(e.target.textContent !== '🚩' && (flagNum > 0) && (flagNum <= bombNum) &&!(Number(e.target.className) in copyMemo) && !e.target.textContent) {
@@ -79,7 +78,7 @@ function createTable(e) {
     const cells = document.querySelectorAll('td');
     
     /* is it a bomb */
-    if (bombs[Number(e.target.className)] && e.target.textContent !== '🚩') {
+    if (bombs[(e.target.className)] && e.target.textContent !== '🚩') {
       e.target.style.backgroundColor = `rgb(${255},${0},${0})`;
       for (let i = 0; i < cells.length; i++) {
         if (bombs[cells[i].className] && cells[i].textContent !== '🚩') {
@@ -102,23 +101,15 @@ function createTable(e) {
     }
 
     /* is it a number */
-    if (!bombs[Number(e.target.className)] && e.target.textContent !== '🚩' && !copyMemo[Number(e.target.className)]){
-      e.target.textContent = `${nums[Number(e.target.className)]}`;
+    if (!bombs[(e.target.className)] && e.target.textContent !== '🚩' && !copyMemo[(e.target.className)]){
+      e.target.textContent = `${nums[(e.target.className)]}`;
       e.target.style.backgroundColor = `rgba(${176},${224},${230},${0.2})`;
-      win[Number(e.target.className)] = 1;
+      win[(e.target.className)] = 1;
     }
 
     /* is it an empty */
-    if (!bombs[Number(e.target.className)] && !nums[Number(e.target.className)]) {
-      let target = Number(e.target.className);
-      if (target <= 109) {
-        var rows = Math.floor(target / 10);
-        var cols = target % 10;
-      } else if (target > 109) {
-        rows = Math.floor(target / 100);
-        cols = target % 100;
-      }
-      isEmpty(rows, cols);
+    if (!bombs[(e.target.className)] && !nums[(e.target.className)]) {
+      isEmpty(e.target.className);
 
       for (let i = 0; i < cells.length; i++) {
         if (cells[i].className in copyMemo) {
@@ -126,7 +117,7 @@ function createTable(e) {
             flagNum++;
             flagPar.textContent = `Remaining flags: ${flagNum}`
           }
-          cells[i].textContent = `${copyMemo[Number(cells[i].className)]}`;
+          cells[i].textContent = `${copyMemo[(cells[i].className)]}`;
           cells[i].style.backgroundColor = `rgba(${176},${224},${230},${0.2})`;
         }
       }
@@ -150,89 +141,73 @@ function createTable(e) {
 
   /* number generator */
   for (let key of Object.keys(bombs)) {
-    let mykey = Number(key); 
-    if (mykey <= 109) {
-      var row = Math.floor(mykey / 10);
-      var col = mykey % 10;  
-    }
-    if (mykey > 109) {
-      row = Math.floor(mykey / 100);
-      col = mykey % 100;
-    } 
-    
-   // console.log('row-col',row ,',', col);
+    let splittedTarget =key.split('-');
+    let row = Number(splittedTarget[0]);
+    let col = Number(splittedTarget[1]);
+  //console.log(row, col);
    
-    if (col > 1 && !bombs[Number(row.toString()+(col-1).toString())]) {
-      (!nums[Number(row.toString()+(col-1).toString())]) ? nums[Number(row.toString()+(col-1).toString())] = 1 : nums[Number(row.toString()+(col-1).toString())] += 1;
+    if (col > 1 && !bombs[(row.toString()+'-'+(col-1).toString())]) {
+      (!nums[(row.toString()+ '-' +(col-1).toString())]) ? nums[(row.toString()+'-'+(col-1).toString())] = 1 : nums[(row.toString()+'-'+(col-1).toString())] += 1;
       //console.log('-1: ',Number(row.toString()+(col-1).toString()));
     } 
-    if (col < colsVal && !bombs[Number(row.toString()+(col+1).toString())]) {
-      (!nums[Number(row.toString()+(col+1).toString())]) ? nums[Number(row.toString()+(col+1).toString())] = 1 : nums[Number(row.toString()+(col+1).toString())] += 1;
+    if (col < colsVal && !bombs[(row.toString()+'-'+(col+1).toString())]) {
+      (!nums[(row.toString()+'-'+(col+1).toString())]) ? nums[(row.toString()+'-'+(col+1).toString())] = 1 : nums[(row.toString()+'-'+(col+1).toString())] += 1;
       //console.log('+1: ',Number(row.toString()+(col+1).toString()));
     }
-    if (row > 1 && !bombs[Number((row-1).toString()+col.toString())]) {
-      (!nums[Number((row-1).toString()+col.toString())]) ? nums[Number((row-1).toString()+(col).toString())] = 1 : nums[Number((row-1).toString()+(col).toString())] += 1;
+    if (row > 1 && !bombs[((row-1).toString()+'-'+col.toString())]) {
+      (!nums[((row-1).toString()+'-'+col.toString())]) ? nums[((row-1).toString()+'-'+(col).toString())] = 1 : nums[((row-1).toString()+'-'+(col).toString())] += 1;
       //console.log('-10: ',Number((row-1).toString()+col.toString()));
     }
-    if (row < rowsVal && !bombs[Number((row+1).toString()+col.toString())]) {
-      (!nums[Number((row+1).toString()+col.toString())]) ? nums[Number((row+1).toString()+col.toString())] = 1 : nums[Number((row+1).toString()+(col).toString())] += 1;
+    if (row < rowsVal && !bombs[((row+1).toString()+'-'+col.toString())]) {
+      (!nums[((row+1).toString()+'-'+col.toString())]) ? nums[((row+1).toString()+'-'+col.toString())] = 1 : nums[((row+1).toString()+'-'+(col).toString())] += 1;
       //console.log('+10: ',Number((row+1).toString()+col.toString()));
     }
-    if (col < colsVal && row < rowsVal && !bombs[Number((row+1).toString()+(col+1).toString())]) {
-      (!nums[Number((row+1).toString()+(col+1).toString())]) ? nums[Number((row+1).toString()+(col+1).toString())] = 1 : nums[Number((row+1).toString()+(col+1).toString())] += 1;
+    if (col < colsVal && row < rowsVal && !bombs[((row+1).toString()+'-'+(col+1).toString())]) {
+      (!nums[((row+1).toString()+'-'+(col+1).toString())]) ? nums[((row+1).toString()+'-'+(col+1).toString())] = 1 : nums[((row+1).toString()+'-'+(col+1).toString())] += 1;
       //console.log('+11: ',Number((row+1).toString()+(col+1).toString()));
     }
-    if (row > 1 && col > 1 && !bombs[Number((row-1).toString()+(col-1).toString())]) {
-      (!nums[Number((row-1).toString()+(col-1).toString())]) ? nums[Number((row-1).toString()+(col-1).toString())] = 1 : nums[Number((row-1).toString()+(col-1).toString())] += 1; 
+    if (row > 1 && col > 1 && !bombs[((row-1).toString()+'-'+(col-1).toString())]) {
+      (!nums[((row-1).toString()+'-'+(col-1).toString())]) ? nums[((row-1).toString()+'-'+(col-1).toString())] = 1 : nums[((row-1).toString()+'-'+(col-1).toString())] += 1; 
      // console.log('-11: ',Number((row-1).toString()+(col-1).toString()));
     }
-    if (row > 1 && col < colsVal && !bombs[Number((row-1).toString()+(col+1).toString())]) {
-      (!nums[Number((row-1).toString()+(col+1).toString())]) ? nums[Number((row-1).toString()+(col+1).toString())] = 1 : nums[Number((row-1).toString()+(col+1).toString())] += 1;
+    if (row > 1 && col < colsVal && !bombs[((row-1).toString()+'-'+(col+1).toString())]) {
+      (!nums[((row-1).toString()+'-'+(col+1).toString())]) ? nums[((row-1).toString()+'-'+(col+1).toString())] = 1 : nums[((row-1).toString()+'-'+(col+1).toString())] += 1;
      // console.log('-9: ',Number((row-1).toString()+(col+1).toString()));
     }
-    if (row < rowsVal && col > 1 && !bombs[Number((row+1).toString()+(col-1).toString())]) {
-      (!nums[Number((row+1).toString()+(col-1).toString())]) ? nums[Number((row+1).toString()+(col-1).toString())] = 1 : nums[Number((row+1).toString()+(col-1).toString())] += 1;
+    if (row < rowsVal && col > 1 && !bombs[((row+1).toString()+'-'+(col-1).toString())]) {
+      (!nums[((row+1).toString()+'-'+(col-1).toString())]) ? nums[((row+1).toString()+'-'+(col-1).toString())] = 1 : nums[((row+1).toString()+'-'+(col-1).toString())] += 1;
      // console.log('+9: ',Number((row+1).toString()+(col-1).toString()));
     }
   }
-  console.log('nums: ',nums);
+ // console.log('nums: ',nums);
   
   /* empty generator */
-  function isEmpty(rows, cols, memo={}) {
+  function isEmpty(clickedCell, memo={}) {
     copyMemo = {...memo};
-    //console.log(clickedCell);  
+   // console.log(clickedCell);  
 
-    /*let rows = Number(clickedCell.slice(0,1));
-    let cols = Number(clickedCell.slice(1));*/
-  
-    /*if ((clickedCell) <= 109) {
-      var rows = Math.floor(clickedCell / 10);
-      var cols = (clickedCell) % 10;  
-    } 
-    else if ((clickedCell) > 109) {
-      rows = Math.floor(clickedCell / 100);
-      cols = (clickedCell) % 100;
-    } */
-    console.log('rows: ', rows);
-    console.log('cols: ',cols);
-    var clickedCell = rows.toString()+cols.toString(); 
+    let target =clickedCell.split('-');
+    let rows = Number(target[0]);
+    let cols = Number(target[1]);
+    //console.log('rows: ', rows);
+    //console.log('cols: ',cols);
+
     if (rows < 1 || cols < 1 || rows > rowsVal || cols > colsVal){
       //console.log('out of range',clickedCell)
-      console.log('out of range',clickedCell)
       return;
     }
     if (clickedCell in bombs) {
-      console.log('this is a bomb',clickedCell)
+      //console.log('this is a bomb',clickedCell)
       return;
     } 
     if (clickedCell in memo) {
-      console.log('already exists ',clickedCell)
+     // console.log('already exists ',clickedCell)
       return;
     } 
     else if(clickedCell in nums){
       memo[clickedCell] = nums[clickedCell];
       win[clickedCell] = 1;
-      console.log('this is a num',clickedCell)
+     // console.log('this is a num',clickedCell)
       return;
     } 
     else {
@@ -243,9 +218,8 @@ function createTable(e) {
     for (let i = 0; i < directions.length; i++) {
       let newRows = (rows)+directions[i][0];
       let newCols = (cols)+directions[i][1];
-      //let newClickedCell = Number(newRows.toString() + newCols.toString());
-      //isEmpty((newClickedCell), memo);
-      isEmpty(newRows, newCols, memo);
+      let newClickedCell = (newRows.toString() +'-'+ newCols.toString());
+      isEmpty(newClickedCell, memo);
     }
   }
 
