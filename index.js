@@ -39,7 +39,7 @@ function createTable(e) {
   }
 
   rowsNum.value = '';
-  cols.value = '';
+  colsNum.value = '';
 
   /* bomb generator*/
   let max = rowsVal * colsVal;
@@ -110,7 +110,15 @@ function createTable(e) {
 
     /* is it an empty */
     if (!bombs[Number(e.target.className)] && !nums[Number(e.target.className)]) {
-      isEmpty((e.target.className));
+      let target = Number(e.target.className);
+      if (target <= 109) {
+        var rows = Math.floor(target / 10);
+        var cols = target % 10;
+      } else if (target > 109) {
+        rows = Math.floor(target / 100);
+        cols = target % 100;
+      }
+      isEmpty(rows, cols);
 
       for (let i = 0; i < cells.length; i++) {
         if (cells[i].className in copyMemo) {
@@ -152,8 +160,7 @@ function createTable(e) {
       col = mykey % 100;
     } 
     
-    console.log('row-col',row ,',', col);
-   
+   // console.log('row-col',row ,',', col);
    
     if (col > 1 && !bombs[Number(row.toString()+(col-1).toString())]) {
       (!nums[Number(row.toString()+(col-1).toString())]) ? nums[Number(row.toString()+(col-1).toString())] = 1 : nums[Number(row.toString()+(col-1).toString())] += 1;
@@ -191,22 +198,26 @@ function createTable(e) {
   console.log('nums: ',nums);
   
   /* empty generator */
-  function isEmpty(clickedCell, memo={}) {
+  function isEmpty(rows, cols, memo={}) {
     copyMemo = {...memo};
-    console.log(clickedCell);  
+    //console.log(clickedCell);  
+
     /*let rows = Number(clickedCell.slice(0,1));
     let cols = Number(clickedCell.slice(1));*/
-    if (Number(clickedCell) <= 109) {
-      var rows = Math.floor(Number(clickedCell) / 10);
-      var cols = Number(clickedCell) % 10;  
-    }
-    if (Number(clickedCell) > 109) {
-      rows = Math.floor(Number(clickedCell) / 100);
-      cols = Number(clickedCell) % 100;
+  
+    /*if ((clickedCell) <= 109) {
+      var rows = Math.floor(clickedCell / 10);
+      var cols = (clickedCell) % 10;  
     } 
-    console.log('clickedR-C: ', rows, '-', cols);
-   
+    else if ((clickedCell) > 109) {
+      rows = Math.floor(clickedCell / 100);
+      cols = (clickedCell) % 100;
+    } */
+    console.log('rows: ', rows);
+    console.log('cols: ',cols);
+    var clickedCell = rows.toString()+cols.toString(); 
     if (rows < 1 || cols < 1 || rows > rowsVal || cols > colsVal){
+      //console.log('out of range',clickedCell)
       console.log('out of range',clickedCell)
       return;
     }
@@ -221,6 +232,7 @@ function createTable(e) {
     else if(clickedCell in nums){
       memo[clickedCell] = nums[clickedCell];
       win[clickedCell] = 1;
+      console.log('this is a num',clickedCell)
       return;
     } 
     else {
@@ -231,8 +243,9 @@ function createTable(e) {
     for (let i = 0; i < directions.length; i++) {
       let newRows = (rows)+directions[i][0];
       let newCols = (cols)+directions[i][1];
-      let newClickedCell = (newRows.toString() + newCols.toString());
-      isEmpty((newClickedCell).toString(), memo);
+      //let newClickedCell = Number(newRows.toString() + newCols.toString());
+      //isEmpty((newClickedCell), memo);
+      isEmpty(newRows, newCols, memo);
     }
   }
 
