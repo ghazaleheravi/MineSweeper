@@ -17,7 +17,7 @@ function createTable(e) {
 
   submit.disabled = true;
   
-  if (rowsNum.value < 3 || colsNum.value < 3 || rowsNum.value > 30 || colsNum > 30) {
+  if (rowsNum.value < 3 && colsNum.value < 3 && rowsNum.value > 30 && colsNum > 30) {
     window.alert('please choose a number bigger than three and smaller than thirty.');
     rowsNum.value = '';
     colsNum.value = '';
@@ -32,7 +32,7 @@ function createTable(e) {
     for (let j = 1; j <= colsVal; j++) {
       var cell = document.createElement('td');
       cell.setAttribute('class', `${i}-${j}`);
-      cell.style.backgroundColor = `rgba(${255},${182},${193},${0.2})`;
+      cell.style.backgroundColor = `rgba(${255},${182},${193},${0.3})`;
       row.appendChild(cell);
     }
     table.appendChild(row);
@@ -89,6 +89,7 @@ function createTable(e) {
         } 
         if (bombs[cells[i].className] && cells[i].textContent === '🚩') {
           cells[i].textContent = '✔';
+          cells[i].style.color = 'red';
           if (e.target !== cells[i]) {
             cells[i].style.backgroundColor = `rgba(${176},${224},${230},${0.2})`;
           }
